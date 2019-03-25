@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
     Button dFragButton;
     Button sendButton;
     FragmentManager fm = getSupportFragmentManager();
@@ -27,37 +27,51 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Get the view from activity_main.xml
         setContentView(R.layout.activity_main);
 
-        // Locate the button in activity_main.xml
-        dFragButton = (Button) findViewById(R.id.dfragbutton);
-
         // Capture button clicks
+        dFragButton = (Button) findViewById(R.id.dfragbutton);
         dFragButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                MyDialogFragment dFragment = new MyDialogFragment();
-                // Show DialogFragment
-                dFragment.show(fm, "Dialog Fragment");
+                sendMessageFragment();
             }
         });
 
-        // Locate the button in activity_main.xml
-        sendButton = (Button) findViewById(R.id.btn_send);
-
         // Capture button clicks
+        sendButton = (Button) findViewById(R.id.btn_send);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                sendMessage();
+                sendMessageActivity();
             }
         });
     }
 
-    public void sendMessage() {
-        Intent intent = new Intent(this, SecondActivity.class);
-        EditText editText = (EditText) findViewById(R.id.input_user);
+    public void sendMessageFragment(){
+        //take string
+        EditText editText = (EditText) findViewById(R.id.input_info);
         String message = editText.getText().toString();
+
+        //send string as a param
+        Bundle bundle = new Bundle();
+        bundle.putString("params", message);
+
+        //create DialogFragment
+        MyDialogFragment dFragment = new MyDialogFragment();
+        dFragment.setArguments(bundle);
+        dFragment.show(fm, "Dialog Fragment");
+    }
+
+    public void sendMessageActivity() {
+        Intent intent = new Intent(this, SecondActivity.class);
+
+        //take string
+        EditText editText = (EditText) findViewById(R.id.input_info);
+        String message = editText.getText().toString();
+
+        //put string and
         intent.putExtra(EXTRA_MESSAGE, message);
+
+        //start activity
         startActivity(intent);
     }
 }
